@@ -26,11 +26,17 @@
 </details>
 
 ## Intallation
-1.Install environment: check the env directory of yml files
+1.Clone the project
+   ```sh
+   git clone https://github.com/liuchuwei/caNano.git
+   ```
+1.Install conda environment
    ```sh
    conda env create -f caNano.yml
    ```
-2.prepare tookit: check and modify the tookit.py file (in 'utils' directory).
+2.prepare tookit: 
+
+check and modify the tookit.py file (in 'utils' directory).
     
 ## Usage
 1.Basecalling

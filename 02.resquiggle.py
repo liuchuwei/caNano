@@ -4,7 +4,7 @@ import argparse
 import sys
 import os
 
-from tookit import Tookits
+from utils.tookit import Tookits
 
 # args define
 parser = argparse.ArgumentParser(description='Basecalling')
@@ -17,7 +17,6 @@ args = parser.parse_args(sys.argv[1:])
 global FLAGS
 FLAGS = args
 
-from tookit import Tookits
 tools = Tookits()
 
 # # Convert merged single big fast5 into small size fast5 file
