@@ -32,7 +32,7 @@
    ```
 1.Install conda environment
    ```sh
-   conda env create -f caNano.yml
+   conda env create -f caNano.yaml
    ```
 2.prepare tookit: 
 
