@@ -28,7 +28,7 @@
 ## Intallation
 1.Install environment: check the env directory of yml files
    ```sh
-   conda env create -f $environment.yml
+   conda env create -f caNano.yml
    ```
 2.prepare tookit: check and modify the tookit.py file (in 'utils' directory).
     
