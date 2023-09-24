@@ -30,7 +30,7 @@
    ```sh
    conda env create -f $environment.yml
    ```
-2.prepare tookit: check and modify the tookit.py file.
+2.prepare tookit: check and modify the tookit.py file (in 'utils' directory).
     
 ## Usage
 1.Basecalling
@@ -39,7 +39,7 @@
    ```
 2.Resguiggle
    ```sh
-   python 02.minimap.py -i $fastq -o $out -r $fasta
+   python 02.resquiggle.py -i $fastq -o $out -r $fasta
    ```
 3.Run caNano for m6a detection
 
