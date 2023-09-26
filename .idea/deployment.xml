@@ -170,6 +170,20 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="wan@172.18.241.55:22 password (27)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="wan@172.18.241.55:22 password (28)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="wan@172.18.241.55:22 password (3)">
         <serverdata>
           <mappings>
