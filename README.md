@@ -49,11 +49,15 @@ check and modify the tookit.py file (in 'utils' directory).
    ```
 3.Run caNano for m6a detection
 
-preprocess
+activate environment
    ```sh
-   git clone https://github.com/liuchuwei/PGLCN.git
+   conda activate caNano
    ```
 
+preprocess
+   ```sh
+   python caNano.py preprocess --single $single_fast5 -o $output -g $genome.fa -r $transcript.fa -b $gene2transcripts.txt
+   ```
 ## License
 Distributed under the GPL-2.0 License License. See LICENSE for more information.
 

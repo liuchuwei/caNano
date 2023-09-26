@@ -45,12 +45,16 @@ def Merge_seq_current(fl, idsTiso, readgene, siteInfo):
     # fl = fl.split("\n")
     # for i in fl[:-1]:
     # ele = i.rstrip().split()
-    ele = fl.rstrip().split()
-    ids = ele[0].split("|")[0]
-    pos = ele[0].split("|")[1]
-    isoform = idsTiso[ids]
-    genemap = readgene[ids]
-    site = str(int(pos) + int(genemap[1]) + 1)
+    try:
+        ele = fl.rstrip().split()
+        ids = ele[0].split("|")[0]
+        pos = ele[0].split("|")[1]
+        isoform = idsTiso[ids]
+        genemap = readgene[ids]
+        site = str(int(pos) + int(genemap[1]) + 1)
+    except:
+        return None
+
     if isoform in siteInfo and site in siteInfo[isoform]:
         align_event = siteInfo[isoform][site]
         ele.append("|".join(align_event))  # base, strand, cov, q_mean, q_median, q_std, mis, ins, del

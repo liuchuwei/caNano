@@ -17,6 +17,6 @@ FLAGS = args
 # basecalling
 tools = Tookits()
 cmd = tools.basecall + " -i " + FLAGS.output + "/fast5" + " -c " + tools.model + " -s " + FLAGS.output + " -r " + \
-      "--device cuda:0" + " --num_callers 16"
+      "--device cuda:0" + " --num_callers 16 --fast5_out"
 
 os.system(cmd)

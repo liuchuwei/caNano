@@ -3,8 +3,8 @@ channels:
   - hcc
   - defaults
 dependencies:
-  - pip=22.3.1=py37h06a4308_0
-  - python=3.7.3=h0371630_0
+  - pip=22.3.1
+  - python=3.7.3
 
   - pip:
     - cloudpickle==2.2.1

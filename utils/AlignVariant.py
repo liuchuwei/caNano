@@ -104,7 +104,7 @@ def java_bam_to_tsv(bam_file, reference_file, sam2tsv, type):
     if type.lower().startswith("t"):
         cmd = f"samtools view -h -F 3860 {bam_file} | java -jar  {sam2tsv} -r {reference_file} " \
               f" | {awk_forward_strand}"
-        from tookit import Tookits
+        from utils.tookit import Tookits
         tools = Tookits()
         cmd = cmd.replace("samtools", tools.samtools)
         cmds = [cmd]
@@ -114,7 +114,7 @@ def java_bam_to_tsv(bam_file, reference_file, sam2tsv, type):
                 f"| {awk_forward_strand} ")
         cmd2 = (f"samtools view -h -f 16 -F 3844 {bam_file} | java -jar  {sam2tsv} -r {reference_file} "
                 f" | {awk_reverse_strand}")
-        from tookit import Tookits
+        from utils.tookit import Tookits
         tools = Tookits()
         cmd1 = cmd1.replace("samtools", tools.samtools)
         cmd2 = cmd2.replace("samtools", tools.samtools)
