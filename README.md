@@ -44,8 +44,33 @@ check and modify the tookit.py file (in 'utils' directory).
    python 01.basecalling.py -i $fast5 -o $out
    ```
 2.Resguiggle
+
+preprocess
+
    ```sh
-   python 02.resquiggle.py -f $fast5 -fq $fastq -o $out -r $fasta
+   conda activate tombo
+   python 02.resquiggle_pre.py -f $fast5 -o $out
+   ```
+annotate_raw_with_fastqs
+
+   ```sh
+   cat *.fastq > merge_fastq
+   python 03.resquiggle.py preprocess annotate_raw_with_fastqs \
+--fast5-basedir $single \
+--fastq-filenames $merge_fastq \
+--overwrite \
+--processes 8
+   ```
+resquiggling
+   ```sh
+python 03.resquiggle.py resquiggle $fast5 $reference \
+--rna \
+--corrected-group RawGenomeCorrected_000 \
+--basecall-group Basecall_1D_000 \
+--overwrite \
+--processes 16 \
+--fit-global-scale \
+--include-event-stdev
    ```
 3.Run caNano for m6a detection
 
