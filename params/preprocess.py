@@ -4,6 +4,7 @@ import argparse
 import multiprocessing
 import os
 from argparse import ArgumentDefaultsHelpFormatter
+
 from utils.ExtractSeqCurrent import extract_feature
 from utils.Mapping import mapping
 from utils.Merge import Merge_seq_current, obtain_idsTiso, obtain_siteInfo, obtain_genoInfo
@@ -39,7 +40,10 @@ def main(args):
     'main funtion for preprocess'
     '1.Get path of single fast5 files'
     print("Get path of single fast5 files...")
-    fls =  [args.single + "/" + item for item in os.listdir(args.single)]
+    # fls =  [args.single + "/" + item for item in os.listdir(args.single)]
+    r = os.popen('find %s -name "*.fast5" ' % (args.single))  # 执行该命令
+    fls = r.readlines()
+    fls = [line.strip('\r\n') for line in fls]
 
     '2.Extract seq & current information'
     print("Extract seq & current information...")

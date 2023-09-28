@@ -19,9 +19,23 @@ FLAGS = args
 
 tools = Tookits()
 
+# merge fastq
+print("merge fastq...")
+pass_fastq = FLAGS.fastq
+merge_fastq = "/".join(pass_fastq.split("/")[0:-1]) + "/merge.fastq"
+pass_fastq = pass_fastq + "/*.fastq"
+cmd = "cat %s > %s" % (pass_fastq, merge_fastq)
+if not os.path.exists(merge_fastq):
+    os.system(cmd)
+FLAGS.fastq = merge_fastq
+
 # # Convert merged single big fast5 into small size fast5 file
-fl = os.listdir(FLAGS.fast5)[0]
-fsize = os.path.getsize(os.path.join(FLAGS.fast5,fl))
+r = os.popen('find %s -name "*.fast5" ' % (FLAGS.fast5))  # 执行该命令
+fls = r.readlines()
+fls = [line.strip('\r\n') for line in fls]
+
+fl = fls[0]
+fsize = os.path.getsize(fl)
 fsize = fsize/float(1024*1024)
 
 # create output directory
@@ -39,6 +53,8 @@ for item in dirs_list:
 
 if fsize > 10:
 
+    print("multi_to_single_fast5...")
+
     cmd = "%s -i %s -s %s -t %s --recursive" % (tools.multi_to_single_fast5, FLAGS.fast5, single_out,FLAGS.process)
     os.system(cmd)
 
@@ -53,6 +69,8 @@ if fsize > 10:
     os.system(cmd)
 
 else:
+    print("multi_to_single_fast5...")
+
     single_out = FLAGS.output + "/single"
     # cmd = "cp %s/*.fast5 %s" % (FLAGS.fast5, single_out)
     cmd = "find %s -name  '*.fast5' | xargs -i cp {} %s" % (FLAGS.fast5, single_out)
