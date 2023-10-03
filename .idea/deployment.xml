@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="wan@172.18.241.55:22 password (31)" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="zdj@192.168.10.104:22 password (13)" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="bioteam@172.31.155.0:22 password">
         <serverdata>
@@ -209,6 +209,20 @@
         <serverdata>
           <mappings>
             <mapping deploy="/data/wan/VisionSeq" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="wan@172.18.241.55:22 password (32)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/data/wan/caNano" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="wan@172.18.241.55:22 password (33)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/data/wan/caNano" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
@@ -671,6 +685,20 @@
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@101.33.215.247:6000 password (60)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@101.33.215.247:6000 password (61)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zdj/桌面/data/caNano" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
@@ -1157,6 +1185,34 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="zdj@192.168.10.104:22 password (10)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zdj/桌面/data/caNano" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@192.168.10.104:22 password (11)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zdj/桌面/data/caNano" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@192.168.10.104:22 password (12)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zdj/桌面/data/caNano" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@192.168.10.104:22 password (13)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zdj/桌面/data/caNano" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="zdj@192.168.10.104:22 password (2)">
         <serverdata>
           <mappings>
@@ -1203,6 +1259,13 @@
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@192.168.10.104:22 password (9)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zdj/桌面/data/caNano" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

@@ -73,6 +73,9 @@ def search_kmer(signal,start,length,base,fn_string, args):
             if args.kmer == '5':
                 base0,base1,base2,base3,base4=[base[indx+x].decode() for x in windows]
                 kmer_now_t="%s%s%s%s%s"%(base0,base1,base2,base3,base4)
+            if args.kmer == '6':
+                base0,base1,base2,base3,base4,base5=[base[indx+x].decode() for x in windows]
+                kmer_now_t="%s%s%s%s%s%s"%(base0,base1,base2,base3,base4,base5)
             if args.kmer == '7':
                 base0, base1, base2, base3, base4, base5, base6 = [base[indx + x].decode() for x in windows]
                 kmer_now_t = "%s%s%s%s%s%s%s" % (base0, base1, base2, base3, base4, base5, base6)
@@ -89,10 +92,12 @@ def search_kmer(signal,start,length,base,fn_string, args):
             mean=[np.mean(x) for x in raw_signal_every]
             std=[np.std(x) for x in raw_signal_every]
             md_intense = [np.median(x) for x in raw_signal_every]
-            length2=[length[indx+x] for x in [-2,-1,0,1,2]]
+            length2=[length[indx+x] for x in windows]
             #############
             if args.kmer == '5':
                 line+="%s|%s|%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n"%(str(fn_string).split("/")[-1],indx,"N",base2,kmer_now_t,"|".join([str(x) for x in mean]),"|".join([str(x) for x in  std]),"|".join([str(x) for x in  md_intense]),"|".join([str(x) for x in length2]),kmer_now_t)
+            if args.kmer == '6':
+                line+="%s|%s|%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n"%(str(fn_string).split("/")[-1],indx,"N",base3,kmer_now_t,"|".join([str(x) for x in mean]),"|".join([str(x) for x in  std]),"|".join([str(x) for x in  md_intense]),"|".join([str(x) for x in length2]),kmer_now_t)
             if args.kmer == '7':
                 line+="%s|%s|%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n"%(str(fn_string).split("/")[-1],indx,"N",base3,kmer_now_t,"|".join([str(x) for x in mean]),"|".join([str(x) for x in  std]),"|".join([str(x) for x in  md_intense]),"|".join([str(x) for x in length2]),kmer_now_t)
             if args.kmer == '9':

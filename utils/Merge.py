@@ -3,7 +3,7 @@ import gzip
 
 from collections import defaultdict
 from tqdm import tqdm
-
+from model.model_factory import singleDNN
 
 def obtain_idsTiso(args):
     basefl = '/'.join(args.output.split("/")[:-1])
