@@ -54,7 +54,7 @@ preprocess
 annotate_raw_with_fastqs
 
    ```sh
-   cat *.fastq > merge_fastq
+   cat *.fastq > merge.fastq
    python 03.resquiggle.py preprocess annotate_raw_with_fastqs \
 --fast5-basedir $single \
 --fastq-filenames $merge_fastq \
@@ -81,8 +81,14 @@ activate environment
 
 preprocess
    ```sh
-   python caNano.py preprocess --single $single_fast5 -o $output -g $genome.fa -r $transcript.fa -b $gene2transcripts.txt
+   python caNano.py preprocess --single $single_fast5 -o $output -g $genome.fa -r $transcript.fa -i $gene2transcripts.txt -b $bam
    ```
+
+train
+   ```sh
+   python caNano.py train --mod %mod.tsv --unmod %unmod.tsv --out model_log/curlcake
+   ```
+
 ## License
 Distributed under the GPL-2.0 License License. See LICENSE for more information.
 

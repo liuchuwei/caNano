@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env Python
+# coding=utf-8
 import gzip
 
 from collections import defaultdict
 from tqdm import tqdm
-from model.model_factory import singleDNN
 
 def obtain_idsTiso(args):
     basefl = '/'.join(args.output.split("/")[:-1])
@@ -16,15 +16,18 @@ def obtain_idsTiso(args):
 
 
 def obtain_siteInfo(args):
-    basefl = '/'.join(args.output.split("/")[:-1])
-    fl = "%s/extract.sort.plus_strand.per.site.csv" % (basefl)
+    # basefl = '/'.join(args.output.split("/")[:-1])
+    basefl = '/'.join(args.bam.split("/")[:-1])
+    fl = "%s/map.plus_strand.per.site.csv" % (basefl)
+    # fl = "%s/map.plus_strand.per.site.%smer.csv" % (basefl, args.kmer)
     siteInfo = defaultdict(dict)
     for i in open(fl, "r"):
         if i.startswith("#"):
             pre1 = "#"
             continue
         ele = i.rstrip().split(',')
-        siteInfo[ele[0]][ele[1]] = ele[2:]
+        # Kmer,Window,Ref,Strand,Coverage,q1,q2,q3,q4,q5,mis1,mis2,mis3,mis4,mis5,ins1,ins2,ins3,ins4,ins5,del1,del2,del3,del4,del5
+        siteInfo[ele[2]][ele[1]] = ele
 
     return siteInfo
 
@@ -38,7 +41,29 @@ def obtain_genoInfo(args):
         readgene[ele[3]] = [ele[0], ele[1], ele[2]]
     return readgene
 
-def Merge_seq_current(fl, idsTiso, readgene, siteInfo):
+def obtain_chromeInfo(args):
+    basefl = '/'.join(args.output.split("/")[:-1])
+    fl = "{0}/extract.bed12".format(basefl)
+    readgene = {}
+    for i in open(fl, "r"):
+        ele = i.rstrip().split()
+        readgene[ele[3]] = [ele[0], ele[1], ele[2]]
+    return readgene
+
+# def Merge_seq_current(fl, idsTiso, readgene, siteInfo, args):
+def Merge_seq_current(fl, args):
+
+    ## 1.ids to isoform
+    idsTiso = obtain_idsTiso(args)
+
+    ## 2.site information
+    siteInfo = obtain_siteInfo(args)
+
+    ## 3.geno information
+    readgene = obtain_genoInfo(args)
+
+    ## 4.chrome information
+    readchrom = obtain_chromeInfo(args)
 
     ## 4.merge information
     # fl = "".join([str(x[0]) for x in nums])
@@ -52,11 +77,19 @@ def Merge_seq_current(fl, idsTiso, readgene, siteInfo):
         isoform = idsTiso[ids]
         genemap = readgene[ids]
         site = str(int(pos) + int(genemap[1]) + 1)
+        if args.kmer == '5':
+            motif = str(int(site) - 2) + "-" + str(int(site) + 2)
+        if args.kmer == '6':
+            motif = str(int(site) - 3) + "-" + str(int(site) + 2)
+        if args.kmer == '7':
+            motif = str(int(site) - 3) + "-" + str(int(site) + 3)
+        if args.kmer == '9':
+            motif = str(int(site) - 4) + "-" + str(int(site) + 4)
     except:
         return None
 
-    if isoform in siteInfo and site in siteInfo[isoform]:
-        align_event = siteInfo[isoform][site]
+    if isoform in siteInfo and motif in siteInfo[isoform]:
+        align_event = siteInfo[isoform][motif]
         ele.append("|".join(align_event))  # base, strand, cov, q_mean, q_median, q_std, mis, ins, del
         ele.append("|".join(genemap))
         lines = "\t".join(ele) + "\n"

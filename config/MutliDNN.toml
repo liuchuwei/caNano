@@ -1,0 +1,26 @@
+[train]
+batch_size = 36
+epoch = 1000
+learning_rate = 1e-4
+shuffle = 'True'
+num_workers = 0
+
+[metric]
+loss_function = "CrossEntropyLoss"
+
+[block]
+    [block.ExtractSite]
+    dims = [[20, 400]]
+
+    [block.ExtractRead]
+    dims = [[20, 200], [200, 32], [32, 20], [20, 1]]
+
+    [block.site_pre_model]
+    dims = [[40, 20], [20, 1]]
+    activation = 'Sigmoid'
+
+    [block.read_pre_model]
+    dims = [[40, 200], [200, 32], [32, 1]]
+    activation = 'Sigmoid'
+
+

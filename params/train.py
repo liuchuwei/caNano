@@ -1,7 +1,7 @@
 import argparse
 from argparse import ArgumentDefaultsHelpFormatter
 from utils.LoadData import DataLoad
-from utils.train_utils import set_seed
+from utils.train_utils import set_seed, train_model
 from model.model_factory import ObtainModel, loadconfig
 
 def argparser():
@@ -19,8 +19,16 @@ def argparser():
     parser.add_argument('--seed', required=False, default=666, help='Path of non modified sample')
 
     # model
-    parser.add_argument('--method', dest='method', default="SingleDNN",
-                        help='Method. Possible values:SingleDNN')
+    parser.add_argument('--method', dest='method', default="MutliDNN",
+                        help='Method. Possible values:MutliDNN')
+
+    # device
+    parser.add_argument('--cuda', dest='cuda', type=bool,default=True,
+                        help='Whether to use gpu')
+
+    # save model
+    parser.add_argument('--out', required=True, help='Directory for saving models')
+
 
     return parser
 
@@ -34,11 +42,10 @@ def main(args):
     loadconfig(args)
 
     '3.load data'
-    dat = DataLoad(args)
+    train_dl, val_dl, test_dl = DataLoad(args).buildDataloder()
 
     '4.build model'
     model = ObtainModel(args)
 
     '5.train model'
-
-    '6.evaluate'
+    train_model(args, dataset=[train_dl, val_dl, test_dl] , model=model)

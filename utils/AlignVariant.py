@@ -287,7 +287,7 @@ def _prepare_dir(dirname):
 def align_variant(args):
     from utils.tookit import Tookits
     tools = Tookits()
-    basefl = '/'.join(args.output.split("/")[:-1])
+    # basefl = '/'.join(args.output.split("/")[:-1])
     # parser = argparse.ArgumentParser()
     # required_args = parser.add_argument_group('Required Arguments')
     # required_args.add_argument('-R', '--reference', help='''samtools faidx indexed reference file and with
@@ -295,7 +295,8 @@ def align_variant(args):
     #                     CreateSequenceDictionary''')
     # required_args.add_argument('-b', '--bam', type=str,
     #                            help='bam file; if given; no need to offer reads file; mapping will be skipped')
-    args.bam = '{0}/extract.sort.bam'.format(basefl)
+    # args.bam = '{0}/extract.sort.bam'.format(basefl)
+    args.bam = args.bam
     # required_args.add_argument('-s', '--sam2tsv', type=str, default='',
     #                            help='/path/to/sam2tsv.jar; needed unless a sam2tsv.jar produced file is already given')
     args.sam2tsv = tools.sam2tsv

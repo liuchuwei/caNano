@@ -9,6 +9,7 @@ from utils.ExtractSeqCurrent import extract_feature
 from utils.Mapping import mapping
 from utils.Merge import Merge_seq_current, obtain_idsTiso, obtain_siteInfo, obtain_genoInfo
 from utils.AlignVariant import align_variant
+from utils.SlideVariant import slide_per_site_var
 from tqdm import tqdm
 
 def argparser():
@@ -16,6 +17,7 @@ def argparser():
         formatter_class=ArgumentDefaultsHelpFormatter,
         add_help=False
     )
+    # parser.add_argument('--mod', required=True, help='Possible value:Extract(extract seq and current information); Merge(merge seq and current information)')
     parser.add_argument('--single', required=True, help='Single fast5 path')
     parser.add_argument('--kmer', default='5', help='Length of kmer')
     parser.add_argument('--kmer_filter', default='[AG][AG]AC[ACT]', help='Define kmer filter')
@@ -27,7 +29,8 @@ def argparser():
     parser.add_argument('-o', '--output', required=True, help="Output directory")
     parser.add_argument('-g', '--genome', required=True, help="Genome file for mapping")
     parser.add_argument('-r', '--reference', required=True, help="Referance transcripts sequence file")
-    parser.add_argument('-b', '--isoform', required=True, help="Gene to referance transcripts information")
+    parser.add_argument('-i', '--isoform', required=True, help="Gene to referance transcripts information")
+    parser.add_argument('-b', '--bam', required=True, help="Path of bam file")
     parser.add_argument('--cpu', default=8, help='cpu number usage,default=8')
     parser.add_argument('--support', default=10,
                         help='The minimum number of DRS reads supporting a modified m6A site in genomic coordinates from one million DRS reads.  The default is 10.  Due to the low sequencing depth for DRS reads, quantification of m6A modification in low abundance gene is difficult.  With this option, the pipeline will attempt to normalize library using this formula: Total number of DRS reads/1,000, 000 to generate \'per million scaling factor\'.   Then the  \'per million scaling factor\'  multiply reads from -r option to generate the cuttoff for the number of modified transcripts  for each modified m6A site.   For example, the option (-r = 10, total DRS reads=2, 000, 000) will generate (2000000/1000000)*10=20 as cuttoff. Than means that modified A base supported by at least 20 modified transcripts will be identified as modified m6A sites in genomic coordinates.')
@@ -37,10 +40,11 @@ def argparser():
 
 def main(args):
 
+    # if args.mod == "Extract":
     'main funtion for preprocess'
     '1.Get path of single fast5 files'
     print("Get path of single fast5 files...")
-    # fls =  [args.single + "/" + item for item in os.listdir(args.single)]
+    fls =  [args.single + "/" + item for item in os.listdir(args.single)]
     r = os.popen('find %s -name "*.fast5" ' % (args.single))  # 执行该命令
     fls = r.readlines()
     fls = [line.strip('\r\n') for line in fls]
@@ -50,7 +54,7 @@ def main(args):
     pool = multiprocessing.Pool(processes = int(args.cpu))
 
     results=[]
-    for fl in fls:
+    for fl in fls[1:100]:
         result=pool.apply_async(extract_feature,(fl,args))
         results.append(result)
     pool.close()
@@ -77,35 +81,55 @@ def main(args):
     output.write("".join([str(x[1]) for x in nums]))
     output.close()
 
+    output = open(args.output + ".tmp.tsv", "w")
+    output.write("".join([str(x[0]) for x in nums]))
+    output.close()
+
     '3.Mapping with genome'
     print("Mapping...")
-    mapping(args, nums)
+    basefl = '/'.join(args.output.split("/")[:-1])
+    site_path = "%s/extract.reference.isoform.bed12" % (basefl)
+    if not os.path.exists(site_path):
+        mapping(args, nums)
 
     '4.Extract align variant information'
     print("Extract align variant information...")
-    align_variant(args)
+    site_path = args.bam.split("/")[:-1]
+    site_path.append("map.plus_strand.per.site.csv")
+    site_path = "/".join(site_path)
+    if not os.path.exists(site_path):
+        align_variant(args)
+    # slide_per_site_var(site_path, int(args.kmer))
 
+    # elif args.mod == "Merge":
     '5.Merge RRACH seq & current information'
     print("Merge RRACH seq & current information...")
-    ## 1.ids to isoform
-    idsTiso = obtain_idsTiso(args)
+    # ## 1.ids to isoform
+    # idsTiso = multiprocessing.Manager().dict(obtain_idsTiso(args))
+    #
+    # ## 2.site information
+    # siteInfo = multiprocessing.Manager().dict(obtain_siteInfo(args))
+    #
+    # ## 3.geno information
+    # readgene = multiprocessing.Manager().dict(obtain_genoInfo(args))
 
-    ## 2.site information
-    siteInfo = obtain_siteInfo(args)
+    fls = []
 
-    ## 3.geno information
-    readgene = obtain_genoInfo(args)
-    fls = "".join([str(x[0]) for x in nums])
-    fls = fls.split("\n")
+    for i in open(args.output + ".tmp.tsv", "r"):
+        fls.append(i.strip())
+
+    # fls = "".join([str(x[0]) for x in nums])
+    # fls = fls.split("\n")
     pool = multiprocessing.Pool(processes = int(args.cpu))
 
     results = []
-    for fl in fls[:-1]:
-        result = pool.apply_async(Merge_seq_current, (fl, idsTiso, readgene, siteInfo))
+    for fl in fls:
+        # result = pool.apply_async(Merge_seq_current, (fl, idsTiso, readgene, siteInfo, args))
+        result = pool.apply_async(Merge_seq_current, (fl, args))
         results.append(result)
     pool.close()
 
-    pbar = tqdm(total=len(fls)-1, position=0, leave=True)
+    pbar = tqdm(total=len(fls), position=0, leave=True)
     meta = []
     for result in results:
         lines = result.get()
