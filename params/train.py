@@ -14,13 +14,14 @@ def argparser():
     parser.add_argument('--unmod', required=True, help='Path of non modified sample')
     parser.add_argument('--motif', default="AAACA", help='Define the motif')
     parser.add_argument('--ratio', default="1:1", help='Ratio of modified sample and non modified sample')
+    parser.add_argument('--min_reads', default="100", help='Ratio of modified sample and non modified sample')
 
     # seed
     parser.add_argument('--seed', required=False, default=666, help='Path of non modified sample')
 
     # model
-    parser.add_argument('--method', dest='method', default="MutliDNN",
-                        help='Method. Possible values:MutliDNN')
+    parser.add_argument('--method', dest='method', default="ResiDNN",
+                        help='Method. Possible values:RsiDNN; MutliDNN')
 
     # device
     parser.add_argument('--cuda', dest='cuda', type=bool,default=True,

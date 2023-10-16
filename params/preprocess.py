@@ -1,16 +1,19 @@
 #!/usr/bin/env Python
 # coding=utf-8
 import argparse
+import gzip
 import multiprocessing
 import os
+import pickle
 from argparse import ArgumentDefaultsHelpFormatter
 
 from utils.ExtractSeqCurrent import extract_feature
 from utils.Mapping import mapping
-from utils.Merge import Merge_seq_current, obtain_idsTiso, obtain_siteInfo, obtain_genoInfo
+from utils.Merge import Merge_seq_current_dict, obtain_idsTiso, obtain_siteInfo, obtain_genoInfo, obtain_chromeInfo, obtain_chrome_site
 from utils.AlignVariant import align_variant
-from utils.SlideVariant import slide_per_site_var
+from utils.SlideVariant import slide_per_site_var, slide_RRACH
 from tqdm import tqdm
+from collections import defaultdict
 
 def argparser():
     parser = argparse.ArgumentParser(
@@ -51,13 +54,13 @@ def main(args):
 
     '2.Extract seq & current information'
     print("Extract seq & current information...")
-    pool = multiprocessing.Pool(processes = int(args.cpu))
+    pool1 = multiprocessing.Pool(processes = int(args.cpu))
 
     results=[]
-    for fl in fls[1:100]:
-        result=pool.apply_async(extract_feature,(fl,args))
+    for fl in fls:
+        result=pool1.apply_async(extract_feature,(fl,args))
         results.append(result)
-    pool.close()
+    pool1.close()
 
     pbar = tqdm(total=len(fls), position=0, leave=True)
     nums = []
@@ -66,7 +69,7 @@ def main(args):
         if num and seq:
             nums.append([num, seq])
         pbar.update(1)
-    pool.join()
+    pool1.join()
 
     dirs = args.output.split("/")
     dirs_list = []
@@ -81,9 +84,9 @@ def main(args):
     output.write("".join([str(x[1]) for x in nums]))
     output.close()
 
-    output = open(args.output + ".tmp.tsv", "w")
-    output.write("".join([str(x[0]) for x in nums]))
-    output.close()
+    # output = open(args.output + ".tmp.tsv", "w")
+    # output.write("".join([str(x[0]) for x in nums]))
+    # output.close()
 
     '3.Mapping with genome'
     print("Mapping...")
@@ -99,44 +102,87 @@ def main(args):
     site_path = "/".join(site_path)
     if not os.path.exists(site_path):
         align_variant(args)
-    # slide_per_site_var(site_path, int(args.kmer))
+
 
     # elif args.mod == "Merge":
     '5.Merge RRACH seq & current information'
     print("Merge RRACH seq & current information...")
-    # ## 1.ids to isoform
-    # idsTiso = multiprocessing.Manager().dict(obtain_idsTiso(args))
+
+    # ---------------------------------------------
+    ## chrome
+    if not os.path.exists('%s.chrome.pkl' % (args.output)):
+        chrome = obtain_chrome_site(nums, args)
+        f_save = open('%s.chrome.pkl' % (args.output), 'wb')
+        pickle.dump(chrome, f_save)
+        f_save.close()
+
+
+    ## isoform
+    if not os.path.exists('%s.iso.pkl' % (args.output)):
+        iso = obtain_idsTiso(args)
+        f_save = open('%s.iso.pkl' % (args.output), 'wb')
+        pickle.dump(iso, f_save)
+        f_save.close()
+
+    ## gene
+    if not os.path.exists('%s.gene.pkl' % (args.output)):
+        gene = obtain_genoInfo(args)
+        f_save = open('%s.gene.pkl' % (args.output), 'wb')
+        pickle.dump(gene, f_save)
+        f_save.close()
+
+    # slide for RRACH
+    if not os.path.exists('%s.slide.pkl' % (args.output)):
+        siteInfo = slide_RRACH(site_path, int(args.kmer))
+        f_save = open('%s.slide.pkl' % (args.output), 'wb')
+        pickle.dump(siteInfo, f_save)
+        f_save.close()
+
+
+    # ---------------------------------------------
+    ## chrome
+    f_read = open('%s.chrome.pkl' % (args.output), 'rb')
+    chrome_info = multiprocessing.Manager().dict(pickle.load(f_read))
+    # chrome_info = pickle.load(f_read)
+
+    ## isoform
+    f_read = open('%s.iso.pkl' % (args.output), 'rb')
+    iso =  multiprocessing.Manager().dict(pickle.load(f_read))
+    # iso =  pickle.load(f_read)
+
+    ## gene
+    f_read = open('%s.gene.pkl' % (args.output), 'rb')
+    gene =  multiprocessing.Manager().dict(pickle.load(f_read))
+    # gene = pickle.load(f_read)
+
+    ## site
+    f_read = open('%s.slide.pkl' % (args.output), 'rb')
+    siteInfo =  multiprocessing.Manager().dict(pickle.load(f_read))
+    # siteInfo =  pickle.load(f_read)
+    # ---------------------------------------------
+    def init_lock(l):
+        global lock
+        lock = l
     #
-    # ## 2.site information
-    # siteInfo = multiprocessing.Manager().dict(obtain_siteInfo(args))
-    #
-    # ## 3.geno information
-    # readgene = multiprocessing.Manager().dict(obtain_genoInfo(args))
-
-    fls = []
-
-    for i in open(args.output + ".tmp.tsv", "r"):
-        fls.append(i.strip())
-
-    # fls = "".join([str(x[0]) for x in nums])
-    # fls = fls.split("\n")
-    pool = multiprocessing.Pool(processes = int(args.cpu))
+    l = multiprocessing.Lock()
+    pool2 = multiprocessing.Pool(processes = int(args.cpu), initializer=init_lock, initargs=(l, ))
+    # pool2 = multiprocessing.Pool(processes = int(args.cpu))
 
     results = []
-    for fl in fls:
-        # result = pool.apply_async(Merge_seq_current, (fl, idsTiso, readgene, siteInfo, args))
-        result = pool.apply_async(Merge_seq_current, (fl, args))
+    for fl in nums:
+        result = pool2.apply_async(Merge_seq_current_dict, (fl, args, chrome_info, iso, gene, siteInfo))
+        # result = pool.apply_async(Merge_seq_current_grep_dict, (fl, args))
         results.append(result)
-    pool.close()
+    pool2.close()
 
-    pbar = tqdm(total=len(fls), position=0, leave=True)
+    pbar = tqdm(total=len(nums), position=0, leave=True)
     meta = []
     for result in results:
         lines = result.get()
         if lines:
             meta.append(lines)
         pbar.update(1)
-    pool.join()
+    pool2.join()
 
     output = open(args.output + ".feature.tsv", "w")
     output.write("".join([x for x in meta]))

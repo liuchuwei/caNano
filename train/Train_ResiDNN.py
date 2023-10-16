@@ -53,7 +53,7 @@ def evaluate(dataloader, model, loss_fn_1, loss_fn_2, device, type="val"):
         print(f"test: \n Acc 0: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
 
 
-def train_MutliDNN(args, dataset, model):
+def train_ResiDNN(args, dataset, model):
 
     train_dl, val_dl, test_dl = dataset
 
@@ -67,7 +67,7 @@ def train_MutliDNN(args, dataset, model):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.config['train']['learning_rate'],
                                  weight_decay=args.config['train']['weight_decay'])
-    torch.optim.lr_scheduler.StepLR(optimizer, 30, gamma=0.1, last_epoch=-1)
+    torch.optim.lr_scheduler.StepLR(optimizer, 100, gamma=0.25, last_epoch=-1)
     loss_fn_1 = torch.nn.BCELoss()
     loss_fn_2 = torch.nn.MSELoss()
     best = 10000

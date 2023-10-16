@@ -1,23 +1,23 @@
 [train]
 batch_size = 36
 epoch = 1000
-learning_rate = 0.01
+learning_rate = 0.001
 shuffle = 'True'
 num_workers = 0
-weight_decay=0.001
+weight_decay=0.0001
 early_stopping=100
 
 [block]
-    [block.ExtractSite]
+    [block.init]
     dims = [[20, 256], [256, 128], [128, 64], [64, 32], [32, 20]]
     dropout = 0.25
 
-    [block.ExtractRead]
+    [block.inter]
     dims = [[40, 512], [512, 256], [256, 128], [128, 64], [64, 32], [32, 20]]
     dropout = 0.25
 
-    [block.site_forward]
-    dims = [[40, 512], [512, 256], [256, 128], [128, 64], [64, 32], [32, 20]]
+    [block.extract]
+    dims = [[40, 20]]
     dropout = 0.25
 
     [block.read_pre_model]
@@ -25,10 +25,10 @@ early_stopping=100
     activation = 'Sigmoid'
     dropout = 0.0
 
-
     [block.site_pre_model]
     dims = [[20, 1]]
-    activation = 'IDENTITY'
+#    activation = 'IDENTITY'
+    activation = 'Sigmoid'
     dropout = 0.0
 
 

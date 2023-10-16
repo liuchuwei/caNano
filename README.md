@@ -86,7 +86,12 @@ preprocess
 
 train
    ```sh
-   python caNano.py train --mod %mod.tsv --unmod %unmod.tsv --out model_log/curlcake
+   python caNano.py train --mod %mod.tsv --unmod %unmod.tsv --out %output
+   ```
+
+predict
+   ```sh
+   python caNano.py predict --input %feature.tsv --output %output --model %model
    ```
 
 ## License

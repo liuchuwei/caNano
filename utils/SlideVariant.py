@@ -7,7 +7,8 @@ import os
 import re
 import sys
 from collections import OrderedDict
-
+from collections import defaultdict
+from tqdm import tqdm
 
 def print_last_consecutive_lines(lines, outfh):
     contents = OrderedDict()
@@ -47,6 +48,57 @@ def print_last_consecutive_lines(lines, outfh):
     for l in consecutive_lines:
         print(kmer + ',' + l, file=outfh)
 
+
+def slide_RRACH(per_site_var, win=5):
+
+    fh = open(per_site_var, 'rb')
+    eof = fh.seek(-1, 2)
+    fh.seek(0, 0)
+    head = fh.readline()
+    lines = []
+
+    head_num = fh.tell()
+    for _ in range(win):
+        l = fh.readline().decode('utf-8').rstrip().split(",")
+        if l:
+            lines.append(l)
+    line_num = (fh.tell() - head_num)/5
+    total_num = int((eof - head_num)//line_num)
+
+    kmer_fillter = "[AG][AG]AC[ACT]"
+    siteInfo = defaultdict(dict)
+
+
+    # par = tqdm(total = eof//(fh.tell()/4))
+
+    print("Extract RRACH matching variant")
+    # total_num = 10000
+    for i in tqdm(range(total_num),position=0):
+    # while (fh.tell() <= eof):
+        try:
+            motif = "".join([item[2] for item in lines])
+        except:
+            continue
+
+        if re.search(kmer_fillter, motif):
+            trans = [item[0] for item in lines]
+            if len(set(trans)) == 1:
+                site_motif = "".join([item[2] for item in lines])
+                site_pos = lines[0][1] + "-" + lines[-1][1]
+                site_qmean = ",".join([item[5] for item in lines])
+                mis = ",".join([item[8] for item in lines])
+                ins = ",".join([item[9] for item in lines])
+                _del = ",".join([item[10] for item in lines])
+                trans = lines[0][0]
+                siteInfo[trans][site_pos] = "%s|%s|%s|%s|%s|%s" % (site_motif, site_pos, site_qmean, mis, ins, _del)
+
+        lines = lines[1:]
+        new_line = fh.readline().decode('utf-8').rstrip().split(",")
+        lines.append(new_line)
+        # par.update(1)
+    # par.close()
+
+    return siteInfo
 
 
 def slide_per_site_var(per_site_var, win=5):
