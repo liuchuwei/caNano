@@ -59,4 +59,5 @@ def main(args):
     y = y.astype(int)
 
     y_pred = np.array([item[1] for item in predict])
+    # y_pred[y_pred<0] = 0
     roc_auc_score(y, y_pred)

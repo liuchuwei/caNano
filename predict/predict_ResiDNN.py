@@ -72,10 +72,6 @@ def predict_residnn(model, motif, args, device, dataset):
                         Rs5_inter = model.inter_block5(Rs5)
 
                         # information extract
-                        ## site information extract
-                        site_nn = torch.concatenate([Rs5_inter, S0], dim=1)
-                        site_for = model.site_extract(site_nn)
-
                         ## read information extract
                         read_nn = torch.concatenate([Rs5_inter, R0], dim=1)
                         read_for = model.site_extract(read_nn)
@@ -83,15 +79,20 @@ def predict_residnn(model, motif, args, device, dataset):
                         # read prob predict
                         read_nn_bn = model.apply_bn(read_for)
                         read_prob = model.read_pre(read_nn_bn)
-                        read_prob = torch.flatten(read_prob)
+                        read_predict = torch.flatten(read_prob)
 
-                        for ids, pro in zip(read_ids[idx], read_prob.cpu().numpy()):
+                        for ids, pro in zip(read_ids[idx], read_predict.cpu().numpy()):
                             r.write('%s, %.16f\n' % (ids, pro))
+
+                        ## site information extract
+                        site_nn = torch.concatenate([read_nn_bn, S0], dim=1)
+                        site_for = model.site_extract(site_nn)
 
                         # ratio predict
                         # site_for_bn = model.apply_bn(site_for)
-                        ratio = model.site_pre(site_for)
-                        ratio = torch.mean(ratio, dim=0)
+                        # ratio = model.site_pre(site_for)
+                        # ratio = torch.mean(ratio, dim=0)
+                        ratio = torch.mean(read_predict)
 
                         s.write('%s, %.16f\n' % (site_ids[idx], ratio))
 

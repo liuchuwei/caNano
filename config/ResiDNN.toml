@@ -27,8 +27,8 @@ early_stopping=100
 
     [block.site_pre_model]
     dims = [[20, 1]]
-#    activation = 'IDENTITY'
-    activation = 'Sigmoid'
+    activation = 'IDENTITY'
+#    activation = 'Sigmoid'
     dropout = 0.0
 
 

@@ -29,7 +29,7 @@ def argparser():
     # predict
     parser.add_argument("--min_reads",
                         help='number of min reads.',
-                        default=1, type=int)
+                        default=5, type=int)
 
     return parser
 

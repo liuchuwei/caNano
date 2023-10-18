@@ -14,6 +14,7 @@ def train(dataloader, model, loss_fn_1, loss_fn_2, optimizer, device):
         loss1 = loss_fn_1(read_prob, y)
         loss2 = loss_fn_2(site_ratio, r)*10
         loss = loss1 + loss2
+        # loss = loss1
 
         # Backpropagation
         loss.backward()
@@ -39,6 +40,7 @@ def evaluate(dataloader, model, loss_fn_1, loss_fn_2, device, type="val"):
             loss1 = loss_fn_1(read_prob, y)
             loss2 = loss_fn_2(site_ratio, r)*10
             test_loss = loss1 + loss2
+            # test_loss = loss1
             pred = read_prob > 0.5
             pred = pred.type(torch.int32)
             correct += (pred == y).type(torch.float).sum().item()

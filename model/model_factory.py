@@ -13,7 +13,7 @@ def loadconfig(args):
         args.config =  toml.load('config/ResiDNN.toml')
         # args.motif =  ["AAACA", "AAACT", "AGACC", "GAACA", "GAACT", "GGACC", "AAACC", "AGACA", "AGACT", "GAACC", "GGACA",
         #         "GGACT"]
-        args.motif = "AAACA"
+        args.motif = "GAACT"
 
     if args.method == "MutliDNN":
         args.config =  toml.load('config/MutliDNN.toml')
@@ -176,27 +176,28 @@ class ResiDNN(nn.Module):
         Rs5_inter = self.inter_block5(Rs5)
 
         # information extract
-        ## site information extract
-        site_nn = torch.concatenate([Rs5_inter, S0], dim=2)
-        site_nn_bn =  self.apply_bn(site_nn)
-        site_for = self.site_extract(site_nn_bn)
-
         ## read information extract
         read_nn = torch.concatenate([Rs5_inter, R0], dim=2)
-        read_nn_bn =  self.apply_bn(read_nn)
-        read_for = self.site_extract(read_nn_bn)
+        # read_nn_bn =  self.apply_bn(read_nn)
+        read_for = self.site_extract(read_nn)
+
+        # read prob predict
+        read_nn_bn = self.apply_bn(read_for)
+        read_prob = self.read_pre(read_nn_bn)
+        read_predict = torch.flatten(read_prob)
+
+
+        ## site information extract
+        site_nn = torch.concatenate([read_nn_bn, S0], dim=2)
+        # site_nn_bn =  self.apply_bn(site_nn)
+        site_for = self.site_extract(site_nn)
 
         # ratio predict
         # site_for_bn =  self.apply_bn(site_for)
-        ratio = self.site_pre(site_for)
-        ratio = torch.mean(ratio, dim=1)
+        ratio_predict = self.site_pre(site_for)
+        ratio_predict = torch.mean(ratio_predict, dim=1)
 
-        # read prob predict
-        # read_nn_bn = self.apply_bn(read_for)
-        read_prob = self.read_pre(read_for)
-        read_prob = torch.flatten(read_prob)
-
-        return read_prob, ratio
+        return read_predict, ratio_predict
 
     def apply_bn(self, x):
         """ Batch normalization of 3D tensor x
