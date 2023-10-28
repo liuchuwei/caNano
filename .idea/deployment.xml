@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="zdj@101.33.215.247:6000 password (66)" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="zdj@192.168.10.104:22 password (30)" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="bioteam@172.31.155.0:22 password">
         <serverdata>
@@ -737,7 +737,35 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="zdj@101.33.215.247:6000 password (67)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@101.33.215.247:6000 password (68)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@101.33.215.247:6000 password (69)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="zdj@101.33.215.247:6000 password (7)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@101.33.215.247:6000 password (70)">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
@@ -1346,10 +1374,38 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="zdj@192.168.10.104:22 password (27)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@192.168.10.104:22 password (28)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@192.168.10.104:22 password (29)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="zdj@192.168.10.104:22 password (3)">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@192.168.10.104:22 password (30)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zdj/桌面/data/mDRS" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
