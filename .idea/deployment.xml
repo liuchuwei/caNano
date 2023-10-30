@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="zdj@192.168.10.104:22 password (30)" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="zdj@101.33.215.247:6000 password (71)" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="bioteam@172.31.155.0:22 password">
         <serverdata>
@@ -223,6 +223,13 @@
         <serverdata>
           <mappings>
             <mapping deploy="/data/wan/caNano" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="wan@172.18.241.55:22 password (34)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
@@ -769,6 +776,13 @@
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zdj@101.33.215.247:6000 password (71)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zdj/桌面/data/caNano" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

@@ -72,7 +72,21 @@ python 03.resquiggle.py resquiggle $fast5 $reference \
 --fit-global-scale \
 --include-event-stdev
    ```
-3.Run caNano for m6a detection
+3.Minimap
+   ```sh
+python 04.minimap.py -i <directory of fastq files> -o <output directory> -r <path of reference>
+   ```
+
+4.Eventalign: preprocess data for m6anet model, you can skip this step if you don't use m6anet model.
+
+```sh
+python 05.eventalign.py -f <directory of fast5 files> -o <output directory> \
+ -fq <path of fastq> -r <path of reference> -bam <path of bam files> -o <output directory>
+```
+
+5.m6a detection
+
+(1) caNano
 
 activate environment
    ```sh
