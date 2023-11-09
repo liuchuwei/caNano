@@ -105,14 +105,14 @@ preprocess
    python caNano.py preprocess --single $single_fast5 -o $output -g $genome.fa -r $transcript.fa -i $gene2transcripts.txt -b $bam
    ```
 
-train
+train_read
    ```shell
-   python caNano.py train --mod %mod.tsv --unmod %unmod.tsv --out %output
+   python caNano.py train_read --mod %mod.tsv --unmod %unmod.tsv --out %output
    ```
 
-predict
+train_site
    ```shell
-   python caNano.py predict --input %feature.tsv --output %output --model %model
+   python caNano.py predict_read --input %feature.tsv --output %output --model %model
    ```
 
 (2) Tombo

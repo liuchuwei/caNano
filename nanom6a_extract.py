@@ -104,6 +104,7 @@ def subcon(fls):
 		##########
 		for fl in fls:
 			# ~ print(fl)
+			# extract_file(fl)
 			result=pool.apply_async(extract_file,(fl,))
 			# result=extract_file(fl)
 			results.append(result)
@@ -167,7 +168,7 @@ if __name__ == "__main__":
 	FLAGS = args
 	total_fl= []
 	for i in open(FLAGS.fl,"r"):
-		# total_fl.append(i.rstrip())
-		total_fl.append("/".join(FLAGS.fl.split("/")[0:-1]) + "/" + i.rstrip())
+		total_fl.append(i.rstrip())
+		# total_fl.append("/".join(FLAGS.fl.split("/")[0:-1]) + "/" + i.rstrip())
 	subcon(total_fl)
 ##################################################################################

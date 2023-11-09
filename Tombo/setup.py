@@ -1,4 +1,3 @@
-# cython: language_level=2
 from __future__ import unicode_literals
 
 import os

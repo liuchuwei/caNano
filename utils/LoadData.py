@@ -43,7 +43,7 @@ def inference_collate(batch):
 class caNanoDS(Dataset):
     def __init__(self, data,
                  sitedict: Dict,
-                 min_reads: Optional[int] = 20,
+                 min_reads: Optional[int] = 0,
                  args=None,
                  id=None,
                  mod=None,
@@ -63,7 +63,7 @@ class caNanoDS(Dataset):
         self.min_reads = min_reads
         self.sitedict = self.TailorSiteDict(sitedict)
         self.args = args
-        self.mod = mod
+        # self.mod = mod
 
         # tmp for study the code logit
         self.__getitem__(0)
@@ -139,22 +139,44 @@ class caNanoDS(Dataset):
 #####################################
 class DataLoad(object):
 
-    def __init__(self, args, mod="Train"):
+    def __init__(self, args):
 
         self.args = args
-        self.mod = mod
+        self.mod = args.mod
 
         print("loading data...")
-        if self.mod == "Train":
-            self.wt = self.preprocess(args.mod, args.motif)
-            self.ko = self.preprocess(args.unmod, args.motif)
-        elif self.mod == "Predict":
-            self.dl = self.preprocess(args.fls, args.motif)
+        if self.mod == "train":
+
+            self.dl = self.preprocess(args.signal, args.motif)
+            self.groundtruth = self.load_groundtruth()
+
+        #     self.wt = self.preprocess(args.mod, args.motif)
+        #     self.ko = self.preprocess(args.unmod, args.motif)
+        # elif self.mod == "Predict":
         print("finish!")
 
         print("reshape and split data for dataset input...")
         self.reshapeData()
         print("finish!")
+
+
+    def load_groundtruth(self):
+
+        fl = self.args.groundtruth
+        ground_truth = []
+        for i in open(fl, "r"):
+
+            if i.startswith("#"):
+                continue
+
+            ele = i.rstrip().split()
+
+            motif = ele[4]
+
+            if motif in self.args.motif:
+                ground_truth.append("|".join(ele))
+
+        return ground_truth
 
     def preprocess(self, path, motif=None):
 
@@ -205,7 +227,7 @@ class DataLoad(object):
 
         '''
 
-        if self.mod == "Train":
+        # if self.mod == "Train":
             # nums = min(len(self.wt['read']), len(self.ko['read']))
             # ratio = self.args.ratio # wt:ko
             # ratio = [int(item) for item in  ratio.split(":")]
@@ -220,43 +242,43 @@ class DataLoad(object):
             # wt_indice = random.sample(range(0, wt_nums), wt_nums)
             # ko_indice =  random.sample(range(0, ko_nums), ko_nums)
 
-            wt = np.concatenate([np.stack([np.concatenate(item) for item in self.wt['current']]), np.stack(self.wt['matching'])], axis=1)
-            ko = np.concatenate([np.stack([np.concatenate(item) for item in self.ko['current']]), np.stack(self.ko['matching'])], axis=1)
+            # wt = np.concatenate([np.stack([np.concatenate(item) for item in self.wt['current']]), np.stack(self.wt['matching'])], axis=1)
+            # ko = np.concatenate([np.stack([np.concatenate(item) for item in self.ko['current']]), np.stack(self.ko['matching'])], axis=1)
 
             # wt = wt[wt_indice]
             # ko = ko[ko_indice]
 
-            X = np.concatenate([wt, ko], axis=0)
+            # X = np.concatenate([wt, ko], axis=0)
+            #
+            # mean_val = np.mean(X, axis=0)
+            # std_val = np.std(X, axis=0)
+            # X_N = (X - mean_val)/std_val
+            #
+            # # normalize length and quality
+            # X[:,15:25] = X_N[:,15:25]
+            #
+            # # site infomation
+            # # wt_id = np.array(["wt_" + item for item in self.wt['read']])[wt_indice]
+            # # ko_id = np.array(["ko_" + item for item in self.ko['read']])[ko_indice]
+            # wt_id = np.array(["wt_" + item for item in self.wt['read']])
+            # ko_id = np.array(["ko_" + item for item in self.ko['read']])
+            #
+            # id = np.concatenate([wt_id, ko_id])
+            #
+            # # split data
+            # self.splitData(id, X)
 
-            mean_val = np.mean(X, axis=0)
-            std_val = np.std(X, axis=0)
-            X_N = (X - mean_val)/std_val
+        # if self.mod == "Predict":
+        X = np.concatenate([np.stack([np.concatenate(item) for item in self.dl['current']]), np.stack(self.dl['matching'])], axis=1)
+        mean_val = np.mean(X, axis=0)
+        std_val = np.std(X, axis=0)
+        X_N = (X - mean_val) / std_val
 
-            # normalize length and quality
-            X[:,15:25] = X_N[:,15:25]
+        # normalize length and quality
+        X[:, 15:25] = X_N[:, 15:25]
 
-            # site infomation
-            # wt_id = np.array(["wt_" + item for item in self.wt['read']])[wt_indice]
-            # ko_id = np.array(["ko_" + item for item in self.ko['read']])[ko_indice]
-            wt_id = np.array(["wt_" + item for item in self.wt['read']])
-            ko_id = np.array(["ko_" + item for item in self.ko['read']])
-
-            id = np.concatenate([wt_id, ko_id])
-
-            # split data
-            self.splitData(id, X)
-
-        if self.mod == "Predict":
-            X = np.concatenate([np.stack([np.concatenate(item) for item in self.dl['current']]), np.stack(self.dl['matching'])], axis=1)
-            mean_val = np.mean(X, axis=0)
-            std_val = np.std(X, axis=0)
-            X_N = (X - mean_val) / std_val
-
-            # normalize length and quality
-            X[:, 15:25] = X_N[:, 15:25]
-
-            id = np.array([item for item in self.dl['read']])
-            self.DS = self.build_DateSet(X, id)
+        id = np.array([item for item in self.dl['read']])
+        self.DS = self.build_DateSet(X, id)
 
     def splitData(self, id, X):
 
@@ -307,10 +329,10 @@ class DataLoad(object):
                 site_dict[site] = [index]
             else:
                 site_dict[site].append(index)
-        if self.mod == "Predict":
-            DateSet = caNanoDS(data=data, sitedict=site_dict, args=self.args, id=id, mod="Predict", min_reads=int(self.args.min_reads))
-        else:
-            DateSet = caNanoDS(data=data, sitedict=site_dict, args=self.args, id=id, min_reads=int(self.args.min_reads))
+        # if self.mod == "Predict":
+        #     DateSet = caNanoDS(data=data, sitedict=site_dict, args=self.args, id=id, mod="Predict", min_reads=int(self.args.min_reads))
+        # else:
+        DateSet = caNanoDS(data=data, sitedict=site_dict, args=self.args, id=id)
 
         return DateSet
 

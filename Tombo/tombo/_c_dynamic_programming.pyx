@@ -1,6 +1,5 @@
 # _c_dynamic_programming.pyx
 # cython: profile=True
-# cython: language_level=2
 
 cimport cython
 
@@ -326,7 +325,6 @@ def c_adaptive_banded_forward_pass(
     cdef DTYPE_INT_t n_bases = fwd_pass.shape[0] - 1
     cdef DTYPE_INT_t bandwidth = fwd_pass.shape[1]
     cdef DTYPE_INT_t half_bandwidth = bandwidth / 2
-    # cdef DTYPE_INT_t half_bandwidth = bandwidth // 2
     cdef DTYPE_INT_t n_events = event_means.shape[0]
 
     # comment out when profiling

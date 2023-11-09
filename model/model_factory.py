@@ -9,14 +9,17 @@ import toml
 #####################################
 def loadconfig(args):
 
-    if args.method == "ResiDNN":
-        args.config =  toml.load('config/ResiDNN.toml')
-        # args.motif =  ["AAACA", "AAACT", "AGACC", "GAACA", "GAACT", "GGACC", "AAACC", "AGACA", "AGACT", "GAACC", "GGACA",
-        #         "GGACT"]
-        args.motif = "GAACT"
-
-    if args.method == "MutliDNN":
-        args.config =  toml.load('config/MutliDNN.toml')
+    # if args.method == "ResiDNN":
+    #     args.config =  toml.load('config/ResiDNN.toml')
+    #     # args.motif =  ["AAACA", "AAACT", "AGACC", "GAACA", "GAACT", "GGACC", "AAACC", "AGACA", "AGACT", "GAACC", "GGACA",
+    #     #         "GGACT"]
+    #     args.motif = "AAACA"
+    #
+    # if args.method == "MutliDNN":
+    #     args.config =  toml.load('config/MutliDNN.toml')
+    #
+    # if args.method == "MutliDNN":
+    args.config =  toml.load('config/GaussianAtt.toml')
 
 def ObtainModel(args):
 

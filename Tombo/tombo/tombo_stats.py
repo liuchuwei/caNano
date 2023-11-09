@@ -796,7 +796,7 @@ class TomboModel(object):
             if seq_samp_type is not None:
                 self.seq_samp_type = seq_samp_type
                 self.ref_fn = th.resolve_path(pkg_resources.resource_filename(
-                    'tombo', 'tombo_models/' + STANDARD_MODELS[
+                    'tombo', 'Tombo/tombo/tombo_models/' + STANDARD_MODELS[
                         seq_samp_type.name]))
             elif reads_index is not None:
                 self._get_default_standard_ref(reads_index)
