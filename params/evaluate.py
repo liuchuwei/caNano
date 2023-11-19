@@ -22,8 +22,8 @@ def argparser():
 def main(args):
 
     '1.load preidct files'
-    cmd = "cat %s/*.site_proba.csv > %s/total_predict.csv" % (args.input, args.output)
-    os.system(cmd)
+    # cmd = "cat %s/*.site_proba.csv > %s/total_predict.csv" % (args.input, args.output)
+    # os.system(cmd)
 
     fl = "%s/total_predict.csv" % (args.output)
     predict = []
@@ -31,7 +31,7 @@ def main(args):
         ele = i.rstrip().split(",")
         pro = float(ele[1])
         ele = ele[0].split("|")
-        Chr, Start, End, Strand, Motif = ele[0], ele[1], ele[1], ele[2], ele[3]
+        Chr, Start, End, Strand, Motif = ele[0], ele[1], str(int(ele[1])+1), ele[2], ele[3]
         predict.append(["|".join([Chr, Start, End, Strand, Motif]), pro])
 
 
@@ -45,6 +45,8 @@ def main(args):
 
         ele = i.rstrip().split()
 
+        ele[1] = str(int(ele[2]))
+        ele[2] = str(int(ele[1])+1)
         motif = ele[4]
 
         if motif in ["AAACA", "AAACT", "AGACC", "GAACA", "GAACT", "GGACC", "AAACC", "AGACA", "AGACT", "GAACC", "GGACA",

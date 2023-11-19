@@ -47,6 +47,7 @@ class caNanoDS(Dataset):
                  args=None,
                  id=None,
                  mod=None,
+                 groundtruth=None
                  ):
         """
         
@@ -63,7 +64,8 @@ class caNanoDS(Dataset):
         self.min_reads = min_reads
         self.sitedict = self.TailorSiteDict(sitedict)
         self.args = args
-        # self.mod = mod
+        self.groundtruth = groundtruth
+        self.mod = mod
 
         # tmp for study the code logit
         self.__getitem__(0)
@@ -92,11 +94,11 @@ class caNanoDS(Dataset):
 
         id = self.keys[idx]
         mod_dict = {"ko":0, "wt":1}
-        if not self.mod == "Predict":
+        if self.mod == "train":
             read_id = self.id[self.sitedict[id]]
             mod = [mod_dict[item.split("_")[0]] for item in read_id]
             mod = torch.tensor(mod, dtype=torch.float32)
-        else:
+        elif self.mod == "predict":
             site = id
 
         reads = self.sitedict[id]
@@ -329,10 +331,10 @@ class DataLoad(object):
                 site_dict[site] = [index]
             else:
                 site_dict[site].append(index)
-        # if self.mod == "Predict":
-        #     DateSet = caNanoDS(data=data, sitedict=site_dict, args=self.args, id=id, mod="Predict", min_reads=int(self.args.min_reads))
-        # else:
-        DateSet = caNanoDS(data=data, sitedict=site_dict, args=self.args, id=id)
+        if self.mod == "predict":
+            DateSet = caNanoDS(data=data, sitedict=site_dict, args=self.args, id=id, mod="predict", min_reads=int(self.args.min_reads))
+        elif self.mod == "train":
+            DateSet = caNanoDS(data=data, sitedict=site_dict, args=self.args, id=id, mod="train", groundtruth=self.groundtruth)
 
         return DateSet
 
